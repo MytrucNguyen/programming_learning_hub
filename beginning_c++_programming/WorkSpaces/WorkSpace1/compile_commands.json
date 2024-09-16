@@ -1,0 +1,9 @@
+[{
+  "file": "/Users/miichew/WorkSpaces/WorkSpace1/WorkSpace2/main.cpp",
+  "directory": "/Users/miichew/WorkSpaces/WorkSpace1/WorkSpace2",
+  "command": "/usr/bin/g++ -c /Users/miichew/WorkSpaces/WorkSpace1/WorkSpace2/main.cpp -o /Users/miichew/WorkSpaces/WorkSpace1/WorkSpace2/main.cpp.o -target arm64-apple-darwin23.6.0 -I/usr/local/include -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1 -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0/include -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks -I. -I.  -O0  -gdwarf-2  -std=c++17  -Wall"
+ }, {
+  "file": "/Users/miichew/WorkSpaces/WorkSpace1/Project1/main.cpp",
+  "directory": "/Users/miichew/WorkSpaces/WorkSpace1/Project1",
+  "command": "/usr/bin/g++ -c /Users/miichew/WorkSpaces/WorkSpace1/Project1/main.cpp -o /Users/miichew/WorkSpaces/WorkSpace1/Project1/main.cpp.o -target arm64-apple-darwin23.6.0 -I/usr/local/include -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1 -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0/include -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks -I. -I.  -O0  -gdwarf-2  -std=c++17  -Wall"
+ }]

@@ -1,0 +1,93 @@
+# Ignore build directories
+/build/
+/bin/
+/out/
+/Debug/
+/Release/
+
+# Ignore CMake generated files
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# Ignore compiled object files and executables
+*.o
+*.obj
+*.exe
+*.out
+*.app
+*.lib
+*.a
+*.so
+*.dll
+
+# Ignore temporary files created by editors
+*.swp
+*.swo
+*~
+
+# Ignore log files
+*.log
+
+# Ignore Visual Studio files
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.sdf
+*.opensdf
+*.suo
+*.user
+*.vcproj
+*.ncb
+*.aps
+*.cache
+*.ilk
+*.pdb
+*.idb
+*.ipch
+*.tlog
+*.log
+*.obj
+*.iobj
+*.ipdb
+
+# Ignore Xcode files
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+*.xcworkspace/
+*.xcuserdatad/
+xcuserdata/
+profile
+*.moved-aside
+DerivedData/
+.idea/
+
+# Ignore Code::Blocks files
+*.layout
+*.depend
+
+# Ignore Qt generated files
+*.pro.user
+*.qmake.stash
+*.qmake.cache
+
+# Ignore macOS files
+.DS_Store
+
+# Ignore Python virtual environment if using scripts
+venv/
+
+# Ignore other common generated files
+*.log
+*.tmp
+*.stackdump
+*.~lock.*
+
+# Ignore environment settings (optional)
+.env
+
+# Ignore macOS system files
+.DS_Store
