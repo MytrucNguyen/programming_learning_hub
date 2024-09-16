@@ -1,0 +1,43 @@
+# Ignore build outputs
+bin/
+obj/
+
+# Ignore user-specific files
+*.user
+*.rsuser
+*.suo
+*.userosscache
+*.sln.docstates
+.vscode/
+
+# Ignore NuGet packages
+*.nupkg
+*.snupkg
+packages/
+.nuget/
+
+# Ignore the lock file
+project.lock.json
+project.fragment.lock.json
+
+# Ignore logs, local databases, and configuration
+*.log
+*.ldb
+*.sqlite
+*.sqlite3
+
+# Ignore Visual Studio-specific files
+.vscode/
+.vs/
+.idea/
+
+# Ignore Rider / JetBrains IDE specific files
+.idea/
+
+# Ignore coverage tool output
+coverage/
+*.coverage
+*.coveragexml
+
+# Ignore file containing sensitive data
+secrets.json
