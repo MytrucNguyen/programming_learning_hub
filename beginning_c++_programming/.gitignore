@@ -65,6 +65,10 @@ profile
 DerivedData/
 .idea/
 
+# Ignore Eclipse files
+.settings/
+*.cproject
+
 # Ignore Code::Blocks files
 *.layout
 *.depend
@@ -81,7 +85,6 @@ DerivedData/
 venv/
 
 # Ignore other common generated files
-*.log
 *.tmp
 *.stackdump
 *.~lock.*
