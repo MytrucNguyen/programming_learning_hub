@@ -41,3 +41,8 @@ coverage/
 
 # Ignore file containing sensitive data
 secrets.json
+
+# Ignore all .db files
+*.db
+*.db-shm 
+*.db-wal
