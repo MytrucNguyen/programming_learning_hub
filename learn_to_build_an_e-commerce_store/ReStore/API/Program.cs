@@ -44,6 +44,21 @@ app.MapGet("/weatherforecast", () =>
 .WithName("GetWeatherForecast")
 .WithOpenApi();
 
+var scrope = app.Services.CreateAsyncScope();
+var context = scrope.ServiceProvider.GetRequiredService<StoreContext>();
+var logger = scrope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+
+try
+{
+    context.Database.Migrate();
+    DbInitializer.Initalize(context);
+}
+catch (Exception ex)
+{
+
+    logger.LogError(ex, "A problem occurred during mirgration");
+}
+
 app.Run();
 
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
