@@ -4,10 +4,11 @@ using API.Entities;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 
 namespace API.Controllers
 {
-    public class BasketController : ControllerBase
+    public class BasketController : BaseApiController
     {
         private readonly StoreContext _context;
         public BasketController(StoreContext context)
@@ -65,9 +66,18 @@ namespace API.Controllers
         public async Task<ActionResult> RemoveBasketItem(int productId, int quantity)
         {
             // get basket 
+            var baskset = await RetrieveBasket();
+            if (baskset == null) return NotFound();
+
             // remove item or reduce quantity
+            baskset.RemoveItem(productId, quantity);
+
             // save changes
-            return Ok();
+            var result = await _context.SaveChangesAsync() > 0;
+            if (result) return Ok();
+
+            return BadRequest(new ProblemDetails { Title = "Problem removing item to basket" });
+
         }
 
         private async Task<Basket> RetrieveBasket()
