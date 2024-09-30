@@ -1,6 +1,6 @@
 import { AppBar, Badge, Box, IconButton, List, ListItem, Switch, Toolbar, Typography } from "@mui/material";
 import NightlightIcon from '@mui/icons-material/Nightlight';
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { ShoppingCart } from "@mui/icons-material";
 
 interface HeaderProps {
@@ -79,6 +79,8 @@ export default function Header({ darkMode, handleThemeChange }: HeaderProps) {
 
                 <Box display='flex' alignItems='center' >
                     <IconButton
+                        component={Link}
+                        to={'/basket'}
                         size='large'
                         edge='start'
                         color='inherit'
