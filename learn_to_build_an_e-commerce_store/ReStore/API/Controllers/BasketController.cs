@@ -8,14 +8,9 @@ using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 
 namespace API.Controllers
 {
-    public class BasketController : BaseApiController
+    public class BasketController(StoreContext context) : BaseApiController
     {
-        private readonly StoreContext _context;
-        public BasketController(StoreContext context)
-        {
-            _context = context;
-
-        }
+        private readonly StoreContext _context = context;
 
         [HttpGet(Name = "GetBasket")]
         public async Task<ActionResult<BasketDto>> GetBasket()
@@ -43,7 +38,6 @@ namespace API.Controllers
 
             // save changes
             var result = await _context.SaveChangesAsync() > 0;
-            if (result) return StatusCode(201);
 
             if (result) return CreatedAtRoute("GetBasket", MapBasketToDto(basket));
 
