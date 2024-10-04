@@ -2,6 +2,7 @@ import { AppBar, Badge, Box, IconButton, List, ListItem, Switch, Toolbar, Typogr
 import NightlightIcon from '@mui/icons-material/Nightlight';
 import { Link, NavLink } from "react-router-dom";
 import { ShoppingCart } from "@mui/icons-material";
+import { useStoreContext } from "../context/StoreContext";
 
 interface HeaderProps {
     darkMode: boolean;
@@ -32,6 +33,9 @@ const navStyle = {
 }
 
 export default function Header({ darkMode, handleThemeChange }: HeaderProps) {
+    const { basket } = useStoreContext();
+    const itemCount = basket?.items.reduce((sum, item) => sum + item.quantity, 0);
+
     return (
         <AppBar position="static" sx={{ mb: 4 }}>
             <Toolbar sx={{
@@ -86,7 +90,7 @@ export default function Header({ darkMode, handleThemeChange }: HeaderProps) {
                         color='inherit'
                         sx={{ mr: 2 }}
                     >
-                        <Badge badgeContent='4' color='secondary'>
+                        <Badge badgeContent={itemCount} color='secondary'>
                             <ShoppingCart />
                         </Badge>
                     </IconButton>
