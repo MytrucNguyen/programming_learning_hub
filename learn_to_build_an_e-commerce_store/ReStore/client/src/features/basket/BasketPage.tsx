@@ -1,4 +1,4 @@
-import { Box, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
+import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import { Add, Delete, Remove } from "@mui/icons-material";
 import { useStoreContext } from "../../app/context/StoreContext";
 import { useState } from "react";
@@ -7,22 +7,25 @@ import { LoadingButton } from "@mui/lab";
 
 export default function BasketPage() {
     const { basket, setBasket, removeItem } = useStoreContext();
-    const [loading, setLoading] = useState(false);
+    const [status, setStatus] = useState({
+        loading: false,
+        name: ''
+    });
 
-    function handleAddItem(productId: number) {
-        setLoading(true);
+    function handleAddItem(productId: number, name: string) {
+        setStatus({ loading: true, name });
         agent.Basket.addItem(productId)
             .then(basket => setBasket(basket))
             .catch(error => console.log(error))
-            .finally(() => setLoading(false))
+            .finally(() => setStatus({ loading: false, name: '' }))
     }
 
-    function handleRemoveItem(productId: number, quantity = 1) {
-        setLoading(true);
+    function handleRemoveItem(productId: number, quantity = 1, name: string) {
+        setStatus({ loading: true, name });
         agent.Basket.removeItem(productId, quantity)
             .then(() => removeItem(productId, quantity))
             .catch(error => console.log(error))
-            .finally(() => setLoading(false))
+            .finally(() => setStatus({ loading: false, name: '' }))
     }
 
     if (!basket) return <Typography variant="h3">Your basket is empty</Typography>
@@ -53,17 +56,29 @@ export default function BasketPage() {
                             </TableCell>
                             <TableCell align="right">${(item.price / 100).toFixed(2)}</TableCell>
                             <TableCell align="center">
-                                <LoadingButton loading={loading} color="error" onClick={() => handleRemoveItem(item.productId)}>
+                                <LoadingButton
+                                    color="error"
+                                    loading={status.loading && status.name == 'remove' + item.productId}
+                                    onClick={() => handleRemoveItem(item.productId, 1, 'remove' + item.productId)}
+                                >
                                     <Remove />
                                 </LoadingButton>
                                 {item.quantity}
-                                <LoadingButton loading={loading} color="secondary" onClick={() => handleAddItem(item.productId)}>
+                                <LoadingButton
+                                    color="secondary"
+                                    loading={status.loading && status.name == 'add' + item.productId}
+                                    onClick={() => handleAddItem(item.productId, 'add' + item.productId)}
+                                >
                                     <Add />
                                 </LoadingButton>
                             </TableCell>
                             <TableCell align="right">{((item.price / 100) * item.quantity).toFixed(2)}</TableCell>
                             <TableCell align="right">
-                                <LoadingButton loading={loading} color="error" onClick={() => handleRemoveItem(item.productId, item.quantity)}>
+                                <LoadingButton
+                                    color="error"
+                                    loading={status.loading && status.name == 'delete' + item.productId}
+                                    onClick={() => handleRemoveItem(item.productId, item.quantity, 'delete' + item.productId)}
+                                >
                                     <Delete />
                                 </LoadingButton>
                             </TableCell>
