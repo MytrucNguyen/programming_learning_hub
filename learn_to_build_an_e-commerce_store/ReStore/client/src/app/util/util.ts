@@ -8,3 +8,7 @@ export const getCookie = (name: string): string | null => {
     }
     return null;
 };
+
+export function currentFormat(amount: number) {
+    return '$' + (amount / 100).toFixed(2);
+}

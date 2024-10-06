@@ -5,6 +5,7 @@ import { useState } from "react";
 import agent from "../../app/api/agent";
 import { LoadingButton } from "@mui/lab";
 import { useStoreContext } from "../../app/context/StoreContext";
+import { currentFormat } from "../../app/util/util";
 
 interface ProductCardProps {
     product: Product;
@@ -45,7 +46,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             />
             <CardContent>
                 <Typography gutterBottom color='secondary' variant="h5">
-                    ${(product.price / 100).toFixed(2)}
+                    {currentFormat(product.price)}
                 </Typography>
                 <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                     {product.brand} / {product.type}
