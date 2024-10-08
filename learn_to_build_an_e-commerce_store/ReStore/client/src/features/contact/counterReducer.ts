@@ -1,15 +1,19 @@
+import { createReducer } from '@reduxjs/toolkit';
+
 export const INCREMENT = 'INCREMENT';
 export const DECREMENT = 'DECREMENT';
 
 interface IncrementAction {
     type: typeof INCREMENT;
+    payload: number;
 }
 
 interface DecrementAction {
     type: typeof DECREMENT;
+    payload: number;
 }
 
-type CounterAction = IncrementAction | DecrementAction;
+export type CounterAction = IncrementAction | DecrementAction;
 
 export interface CounterState {
     data: number;
@@ -21,22 +25,22 @@ const initialState: CounterState = {
     title: 'YARC',
 }
 
-export default function counterReducer(
-    state = initialState,
-    action: CounterAction
-): CounterState {
-    switch (action.type) {
-        case INCREMENT:
-            return {
-                ...state,
-                data: state.data + 1,
-            };
-        case DECREMENT:
-            return {
-                ...state,
-                data: state.data - 1,
-            };
-        default:
-            return state;
-    }
-}
+export const increments = (amount = 1) => ({
+    type: INCREMENT,
+    payload: amount,
+});
+
+export const decrement = (amount = 1) => ({
+    type: DECREMENT,
+    payload: amount,
+});
+
+export default createReducer(initialState, (builder) => {
+    builder
+        .addCase(INCREMENT, (state, action: IncrementAction) => {
+            state.data += action.payload;
+        })
+        .addCase(DECREMENT, (state, action: DecrementAction) => {
+            state.data -= action.payload;
+        });
+});
