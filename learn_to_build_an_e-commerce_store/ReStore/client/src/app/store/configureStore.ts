@@ -1,4 +1,4 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore } from "@reduxjs/toolkit";
 import counterReducer from "../../features/contact/counterReducer";
 
 export const store = configureStore({

@@ -8,10 +8,8 @@ import '@fontsource/roboto/700.css';
 import { RouterProvider } from 'react-router-dom';
 import { router } from './app/router/Routes.tsx';
 import { StoreProvider } from './app/context/StoreContext.tsx';
-import { configureStore } from './app/store/configureStore.ts';
 import { Provider } from 'react-redux';
-
-const store = configureStore();
+import { store } from './app/store/configureStore.ts';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
