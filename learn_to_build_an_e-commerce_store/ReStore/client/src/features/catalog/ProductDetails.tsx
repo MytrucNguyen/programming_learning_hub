@@ -7,16 +7,15 @@ import NotFound from "../../app/errors/NotFound";
 import LoadingComponent from "../../app/layout/LoadingComponent";
 import { LoadingButton } from "@mui/lab";
 import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
-import { removeItem, setBasket } from "../basket/basketSlice";
+import { addBasketItemAsync, removeBasketItemAsync } from "../basket/basketSlice";
 
 export default function ProductDetails() {
-    const { basket } = useAppSelector(state => state.basket);
+    const { basket, status } = useAppSelector(state => state.basket);
     const dispatch = useAppDispatch();
     const { id } = useParams<{ id: string }>();
     const [product, setProduct] = useState<Product | null>(null);
     const [loading, setLoading] = useState(true);
     const [quantity, setQuantity] = useState(0);
-    const [submitting, setSubmitting] = useState(false);
 
     const item = basket?.items.find(i => i.productId === product?.id);
 
@@ -38,11 +37,8 @@ export default function ProductDetails() {
     }
 
     function handleUpdateCart() {
-        setSubmitting(true);
-
         if (!product) {
             console.error("Product is undefined or null.");
-            setSubmitting(false);
             return;
         }
 
@@ -51,18 +47,10 @@ export default function ProductDetails() {
 
         if (isIncreasingQuantity) {
             const updatedQuantity = itemExistsInCart ? quantity - item.quantity : quantity;
-
-            agent.Basket.addItem(product.id, updatedQuantity)
-                .then(basket => dispatch(setBasket(basket)))
-                .catch(error => console.error("Error adding item to the basket:", error))
-                .finally(() => setSubmitting(false));
+            dispatch(addBasketItemAsync({ productId: product.id, quantity: updatedQuantity }))
         } else {
             const updatedQuantity = item.quantity - quantity;
-
-            agent.Basket.removeItem(product.id, updatedQuantity)
-                .then(() => dispatch(removeItem({ productId: product.id, quantity: updatedQuantity })))
-                .catch(error => console.error("Error removing item from the basket:", error))
-                .finally(() => setSubmitting(false));
+            dispatch(removeBasketItemAsync({ productId: product.id, quantity: updatedQuantity }))
         }
     }
 
@@ -120,7 +108,7 @@ export default function ProductDetails() {
                     <Grid item xs={6}>
                         <LoadingButton
                             disabled={item?.quantity === quantity || !item && quantity === 0}
-                            loading={submitting}
+                            loading={status.includes('pendingRemoveItem' + item?.productId)}
                             onClick={handleUpdateCart}
                             sx={{ height: '55px' }}
                             color='primary'
