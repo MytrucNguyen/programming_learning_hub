@@ -9,11 +9,11 @@ import { addBasketItemAsync, removeBasketItemAsync } from "../basket/basketSlice
 import { fetchProductAsync, productSelectors } from "./catalogSlice";
 
 export default function ProductDetails() {
-    const { basket, status } = useAppSelector(state => state.basket);
+    const { basket, status: basketStatus } = useAppSelector(state => state.basket);
     const { id } = useParams<{ id: string }>();
     const product = useAppSelector(state => productSelectors.selectById(state, parseInt(id!)));
     const dispatch = useAppDispatch();
-    const { status: productStatus } = useAppSelector(state => state.basket)
+    const { status: productStatus } = useAppSelector(state => state.catalog);
     const [quantity, setQuantity] = useState(0);
 
     const item = basket?.items.find(i => i.productId === product?.id);
@@ -49,7 +49,7 @@ export default function ProductDetails() {
         }
     }
 
-    if (productStatus.includes('pending')) return <LoadingComponent message="Loading product" />
+    if (productStatus === 'pending') return <LoadingComponent message="Loading product" />
 
     if (!product) return <NotFound />
 
@@ -102,8 +102,8 @@ export default function ProductDetails() {
                     </Grid>
                     <Grid item xs={6}>
                         <LoadingButton
-                            disabled={item?.quantity === quantity || !item && quantity === 0}
-                            loading={status.includes('pendingRemoveItem' + item?.productId)}
+                            disabled={item?.quantity === quantity || (!item && quantity === 0)}
+                            loading={basketStatus.includes('pending')}
                             onClick={handleUpdateCart}
                             sx={{ height: '55px' }}
                             color='primary'

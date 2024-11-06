@@ -5,60 +5,67 @@ import { RootState } from "../../app/store/configureStore";
 
 const productsAdapter = createEntityAdapter<Product>();
 
-export const fetchProductsAsync = createAsyncThunk<Product[]>(
+export const fetchProductsAsync = createAsyncThunk<Product[], void, { rejectValue: string }>(
     'catalog/fetchProductsAsync',
-    async () => {
+    async (_, thunkAPI) => {
         try {
             return await agent.Catalog.list();
-        } catch (error) {
-            console.log(error);
+        } catch {
+            return thunkAPI.rejectWithValue("Failed to fetch products.");
         }
     }
-)
+);
 
-export const fetchProductAsync = createAsyncThunk<Product, number>(
+export const fetchProductAsync = createAsyncThunk<Product, number, { rejectValue: string }>(
     'catalog/fetchProductAsync',
-    async (productId) => {
+    async (productId, thunkAPI) => {
         try {
             return await agent.Catalog.details(productId);
-        } catch (error) {
-            console.log(error);
+        } catch {
+            return thunkAPI.rejectWithValue("Failed to fetch product details.");
         }
     }
-)
+);
 
 export const catalogSlice = createSlice({
     name: 'catalog',
     initialState: productsAdapter.getInitialState({
         productsLoaded: false,
         status: 'idle',
+        error: null as string | null,
     }),
     reducers: {},
-    extraReducers: (builder => {
+    extraReducers: (builder) => {
         builder.addCase(fetchProductsAsync.pending, (state) => {
             state.status = 'pendingFetchProducts';
+            state.error = null;
         });
         builder.addCase(fetchProductsAsync.fulfilled, (state, action) => {
             productsAdapter.setAll(state, action.payload);
             state.status = 'idle';
             state.productsLoaded = true;
+            state.error = null;
         });
-        builder.addCase(fetchProductsAsync.rejected, (state) => {
+        builder.addCase(fetchProductsAsync.rejected, (state, action) => {
             state.status = 'idle';
+            state.error = action.payload ?? "An unknown error occurred while fetching products.";
         });
 
         builder.addCase(fetchProductAsync.pending, (state) => {
             state.status = 'pendingFetchProduct';
+            state.error = null;
         });
         builder.addCase(fetchProductAsync.fulfilled, (state, action) => {
             productsAdapter.upsertOne(state, action.payload);
             state.status = 'idle';
             state.productsLoaded = true;
+            state.error = null;
         });
-        builder.addCase(fetchProductAsync.rejected, (state) => {
+        builder.addCase(fetchProductAsync.rejected, (state, action) => {
             state.status = 'idle';
+            state.error = action.payload ?? "An unknown error occurred while fetching product details.";
         });
-    })
+    },
 });
 
 export const productSelectors = productsAdapter.getSelectors((state: RootState) => state.catalog);
