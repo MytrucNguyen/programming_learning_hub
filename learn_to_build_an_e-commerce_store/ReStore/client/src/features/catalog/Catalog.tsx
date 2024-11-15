@@ -3,7 +3,7 @@ import ProductList from "./ProductList";
 import LoadingComponent from "../../app/layout/LoadingComponent";
 import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
 import { fetchFilters, fetchProductsAsync, productSelectors } from "./catalogSlice";
-import { Box, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, Pagination, Paper, Radio, RadioGroup, TextField, Typography } from "@mui/material";
+import { Box, Checkbox, FormControl, FormControlLabel, FormGroup, Grid, Pagination, Paper, Radio, RadioGroup, TextField, Typography } from "@mui/material";
 
 const sortOptions = [
     { value: 'name', label: 'Alphabetical' },

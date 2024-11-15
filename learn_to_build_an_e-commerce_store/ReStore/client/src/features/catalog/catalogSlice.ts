@@ -36,11 +36,30 @@ function getErrorMessage(error: unknown): string | null {
 
 const productsAdapter = createEntityAdapter<Product>();
 
-export const fetchProductsAsync = createAsyncThunk<Product[], void, { rejectValue: string }>(
+function getAxiosParams(productParams: ProductParams) {
+    const params = new URLSearchParams();
+    params.append('pageNumber', productParams.pageNumber.toString());
+    params.append('pageSize', productParams.pageSize.toString());
+    params.append('orderBy', productParams.orderBy);
+    if (productParams.searchTerm) {
+        params.append('searchTerm', productParams.searchTerm);
+    };
+    if (productParams.brands) {
+        params.append('brands', productParams.brands.toString());
+    };
+    if (productParams.types) {
+        params.append('searchTerm', productParams.types.toString());
+    };
+
+    return params;
+}
+
+export const fetchProductsAsync = createAsyncThunk<Product[], void, { state: RootState; rejectValue: string }>(
     'catalog/fetchProductsAsync',
     async (_, thunkAPI) => {
         try {
-            return await agent.Catalog.list();
+            const params = getAxiosParams(thunkAPI.getState().catalog.productParams);
+            return await agent.Catalog.list(params);
         } catch (error) {
             const errorMessage = getErrorMessage(error) || "Failed to fetch products.";
             return thunkAPI.rejectWithValue(errorMessage);
