@@ -14,7 +14,7 @@ export default function RadioButtonGroup({ options, onChange, selectedValue }: P
                 value={selectedValue}
             >
                 {options.map(({ value, label }) => (
-                    <FormControlLabel value={value} control={<Radio />} label={label} />
+                    <FormControlLabel value={value} control={<Radio />} label={label} key={value} />
 
                 ))}
             </RadioGroup>
