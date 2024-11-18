@@ -6,15 +6,19 @@ namespace API.Extensions
     {
         public static IQueryable<Product> Sort(this IQueryable<Product> query, string orderBy)
         {
-            if (string.IsNullOrWhiteSpace(orderBy)) return query.OrderBy(p => p.Name); query = orderBy switch
+            if (string.IsNullOrWhiteSpace(orderBy))
+                return query.OrderBy(p => p.Name);
+
+            query = orderBy switch
             {
-                "price" => query.OrderBy(p => p.Price),
-                "priceDesc" => query.OrderBy(p => p.Price),
+                "priceAsc" => query.OrderBy(p => p.Price),
+                "pricedDesc" => query.OrderByDescending(p => p.Price),
                 _ => query.OrderBy(p => p.Name),
             };
 
             return query;
         }
+
         public static IQueryable<Product> Search(this IQueryable<Product> query, string searchTerm)
         {
             if (string.IsNullOrEmpty(searchTerm)) return query;
