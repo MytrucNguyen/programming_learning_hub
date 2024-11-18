@@ -7,7 +7,7 @@ export interface MetaData {
 
 export class PaginatedResponse<T> {
     items: T;
-    metaData: MetaData | null;
+    metaData: MetaData;
 
     constructor(items: T, metaData: MetaData) {
         this.items = items;
