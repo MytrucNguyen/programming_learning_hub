@@ -1,5 +1,7 @@
 using API.Data;
+using API.Entities;
 using API.MiddleWare;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +17,11 @@ builder.Services.AddDbContext<StoreContext>(opt =>
     opt.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 builder.Services.AddCors();
+builder.Services.AddIdentityCore<User>()
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<StoreContext>();
+builder.Services.AddAuthentication();
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -39,12 +46,13 @@ app.MapControllers();
 
 var scrope = app.Services.CreateAsyncScope();
 var context = scrope.ServiceProvider.GetRequiredService<StoreContext>();
+var userManager = scrope.ServiceProvider.GetRequiredService<UserManager<User>>();
 var logger = scrope.ServiceProvider.GetRequiredService<ILogger<Program>>();
 
 try
 {
-    context.Database.Migrate();
-    DbInitializer.Initalize(context);
+    await context.Database.MigrateAsync();
+    await DbInitializer.Initalize(context, userManager);
 }
 catch (Exception ex)
 {
