@@ -77,8 +77,8 @@ const Basket = {
 }
 
 const Account = {
-    login: (values: any) => requests.post('account/login', values)
-    register: (values: any) => requests.post('account/register', values)
+    login: (values: any) => requests.post('account/login', values),
+    register: (values: any) => requests.post('account/register', values),
     currentUser: () => requests.get('account/currentUser')
 }
 
