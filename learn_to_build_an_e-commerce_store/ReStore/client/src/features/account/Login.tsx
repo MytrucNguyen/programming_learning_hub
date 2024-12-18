@@ -1,4 +1,3 @@
-import * as React from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import FormLabel from '@mui/material/FormLabel';
@@ -8,6 +7,8 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
+import { FormEvent, useState } from 'react';
+import agent from '../../app/api/agent';
 
 const Card = styled(MuiCard)(({ theme }) => ({
     display: 'flex',
@@ -29,35 +30,39 @@ const Card = styled(MuiCard)(({ theme }) => ({
 }));
 
 export default function Login() {
-    const [emailError, setEmailError] = React.useState(false);
-    const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
-    const [passwordError, setPasswordError] = React.useState(false);
-    const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        if (emailError || passwordError) {
-            event.preventDefault();
-            return;
-        }
-        const data = new FormData(event.currentTarget);
-        console.log({
-            email: data.get('email'),
-            password: data.get('password'),
-        });
+    const [values, setValues] = useState({
+        username: '',
+        password: ''
+    })
+
+    const [usernameError, setUsernameError] = useState(false);
+    const [usernameErrorMessage, setUsernameErrorMessage] = useState('');
+    const [passwordError, setPasswordError] = useState(false);
+    const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
+
+    const handleSubmit = (event: any) => {
+        event.preventDefault();
+        agent.Account.login(values);
     };
 
+    function handleInputChange(event: any) {
+        const { name, value } = event.target;
+        setValues({ ...values, [name]: value })
+    }
+
     const validateInputs = () => {
-        const email = document.getElementById('email') as HTMLInputElement;
+        const username = document.getElementById('username') as HTMLInputElement;
         const password = document.getElementById('password') as HTMLInputElement;
 
         let isValid = true;
 
-        if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
-            setEmailError(true);
-            setEmailErrorMessage('Please enter a valid email address.');
+        if (!username.value || username.value.length < 3) {
+            setUsernameError(true);
+            setUsernameErrorMessage('Username must be at least 3 characters long.');
             isValid = false;
         } else {
-            setEmailError(false);
-            setEmailErrorMessage('');
+            setUsernameError(false);
+            setUsernameErrorMessage('');
         }
 
         if (!password.value || password.value.length < 6) {
@@ -93,20 +98,21 @@ export default function Login() {
                 }}
             >
                 <FormControl>
-                    <FormLabel htmlFor="email">Email</FormLabel>
+                    <FormLabel htmlFor="username">Username</FormLabel>
                     <TextField
-                        error={emailError}
-                        helperText={emailErrorMessage}
-                        id="email"
-                        type="email"
-                        name="email"
-                        placeholder="your@email.com"
-                        autoComplete="email"
+                        error={usernameError}
+                        helperText={usernameErrorMessage}
+                        id="username"
+                        type="username"
+                        name="username"
+                        placeholder="Username"
                         autoFocus
                         required
                         fullWidth
                         variant="outlined"
-                        color={emailError ? 'error' : 'primary'}
+                        color={usernameError ? 'error' : 'primary'}
+                        onChange={handleInputChange}
+                        value={values.username}
                     />
                 </FormControl>
                 <FormControl>
@@ -124,6 +130,8 @@ export default function Login() {
                         fullWidth
                         variant="outlined"
                         color={passwordError ? 'error' : 'primary'}
+                        onChange={handleInputChange}
+                        value={values.password}
                     />
                 </FormControl>
                 <Button
