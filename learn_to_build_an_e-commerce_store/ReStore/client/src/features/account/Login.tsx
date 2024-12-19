@@ -1,5 +1,4 @@
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import FormLabel from '@mui/material/FormLabel';
 import FormControl from '@mui/material/FormControl';
 import Link from '@mui/material/Link';
@@ -7,8 +6,10 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
-import { FormEvent, useState } from 'react';
+import { useState } from 'react';
 import agent from '../../app/api/agent';
+import { FieldValues, useForm } from 'react-hook-form';
+import { LoadingButton } from '@mui/lab';
 
 const Card = styled(MuiCard)(({ theme }) => ({
     display: 'flex',
@@ -30,25 +31,17 @@ const Card = styled(MuiCard)(({ theme }) => ({
 }));
 
 export default function Login() {
-    const [values, setValues] = useState({
-        username: '',
-        password: ''
-    })
-
     const [usernameError, setUsernameError] = useState(false);
     const [usernameErrorMessage, setUsernameErrorMessage] = useState('');
     const [passwordError, setPasswordError] = useState(false);
     const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
 
-    const handleSubmit = (event: any) => {
-        event.preventDefault();
-        agent.Account.login(values);
-    };
+    const { register, handleSubmit, formState: { isSubmitting, isDirty, isValid } } = useForm();
 
-    function handleInputChange(event: any) {
-        const { name, value } = event.target;
-        setValues({ ...values, [name]: value })
+    async function submitForm(data: FieldValues) {
+        await agent.Account.login(data);
     }
+
 
     const validateInputs = () => {
         const username = document.getElementById('username') as HTMLInputElement;
@@ -88,7 +81,7 @@ export default function Login() {
             </Typography>
             <Box
                 component="form"
-                onSubmit={handleSubmit}
+                onSubmit={handleSubmit(submitForm)}
                 noValidate
                 sx={{
                     display: 'flex',
@@ -104,15 +97,13 @@ export default function Login() {
                         helperText={usernameErrorMessage}
                         id="username"
                         type="username"
-                        name="username"
                         placeholder="Username"
                         autoFocus
                         required
                         fullWidth
                         variant="outlined"
                         color={usernameError ? 'error' : 'primary'}
-                        onChange={handleInputChange}
-                        value={values.username}
+                        {...register('username')}
                     />
                 </FormControl>
                 <FormControl>
@@ -120,7 +111,6 @@ export default function Login() {
                     <TextField
                         error={passwordError}
                         helperText={passwordErrorMessage}
-                        name="password"
                         placeholder="••••••"
                         type="password"
                         id="password"
@@ -130,18 +120,18 @@ export default function Login() {
                         fullWidth
                         variant="outlined"
                         color={passwordError ? 'error' : 'primary'}
-                        onChange={handleInputChange}
-                        value={values.password}
+                        {...register('password')}
                     />
                 </FormControl>
-                <Button
+                <LoadingButton
+                    loading={isSubmitting}
                     type="submit"
                     fullWidth
                     variant="contained"
                     onClick={validateInputs}
                 >
                     Sign in
-                </Button>
+                </LoadingButton>
             </Box>
             <Typography sx={{ textAlign: 'center' }}>
                 Don&apos;t have an account?{' '}
