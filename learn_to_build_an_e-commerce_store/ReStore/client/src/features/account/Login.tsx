@@ -6,7 +6,6 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
-import { useState } from 'react';
 import agent from '../../app/api/agent';
 import { FieldValues, useForm } from 'react-hook-form';
 import { LoadingButton } from '@mui/lab';
@@ -31,44 +30,18 @@ const Card = styled(MuiCard)(({ theme }) => ({
 }));
 
 export default function Login() {
-    const [usernameError, setUsernameError] = useState(false);
-    const [usernameErrorMessage, setUsernameErrorMessage] = useState('');
-    const [passwordError, setPasswordError] = useState(false);
-    const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
-
-    const { register, handleSubmit, formState: { isSubmitting, isDirty, isValid } } = useForm();
+    const { register, handleSubmit, formState: { isSubmitting, isValid, errors } } = useForm({
+        mode: 'onTouched',
+    });
 
     async function submitForm(data: FieldValues) {
-        await agent.Account.login(data);
+        try {
+            await agent.Account.login(data);
+        }
+        catch (error) {
+            console.log(error)
+        }
     }
-
-
-    const validateInputs = () => {
-        const username = document.getElementById('username') as HTMLInputElement;
-        const password = document.getElementById('password') as HTMLInputElement;
-
-        let isValid = true;
-
-        if (!username.value || username.value.length < 3) {
-            setUsernameError(true);
-            setUsernameErrorMessage('Username must be at least 3 characters long.');
-            isValid = false;
-        } else {
-            setUsernameError(false);
-            setUsernameErrorMessage('');
-        }
-
-        if (!password.value || password.value.length < 6) {
-            setPasswordError(true);
-            setPasswordErrorMessage('Password must be at least 6 characters long.');
-            isValid = false;
-        } else {
-            setPasswordError(false);
-            setPasswordErrorMessage('');
-        }
-
-        return isValid;
-    };
 
     return (
         <Card variant="outlined">
@@ -93,8 +66,8 @@ export default function Login() {
                 <FormControl>
                     <FormLabel htmlFor="username">Username</FormLabel>
                     <TextField
-                        error={usernameError}
-                        helperText={usernameErrorMessage}
+                        error={!!errors.username}
+                        helperText={typeof errors?.username?.message === 'string' ? errors.username.message : ''}
                         id="username"
                         type="username"
                         placeholder="Username"
@@ -102,15 +75,14 @@ export default function Login() {
                         required
                         fullWidth
                         variant="outlined"
-                        color={usernameError ? 'error' : 'primary'}
-                        {...register('username')}
+                        {...register('username', { required: 'Username is required' })}
                     />
                 </FormControl>
                 <FormControl>
                     <FormLabel htmlFor="password">Password</FormLabel>
                     <TextField
-                        error={passwordError}
-                        helperText={passwordErrorMessage}
+                        error={!!errors.password}
+                        helperText={typeof errors?.password?.message === 'string' ? errors.password.message : ''}
                         placeholder="••••••"
                         type="password"
                         id="password"
@@ -119,16 +91,16 @@ export default function Login() {
                         required
                         fullWidth
                         variant="outlined"
-                        color={passwordError ? 'error' : 'primary'}
-                        {...register('password')}
+                        {...register('password', { required: "Password is required" })}
                     />
                 </FormControl>
                 <LoadingButton
                     loading={isSubmitting}
+                    disabled={!isValid}
                     type="submit"
                     fullWidth
                     variant="contained"
-                    onClick={validateInputs}
+                // onClick={validateInputs}
                 >
                     Sign in
                 </LoadingButton>
