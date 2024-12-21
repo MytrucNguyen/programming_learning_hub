@@ -1,24 +1,6 @@
-import { createContext, PropsWithChildren, useContext, useState } from "react";
+import React, { PropsWithChildren, useState } from "react";
+import { StoreContext, StoreContextValue } from "./storeContext";
 import { Basket } from "../models/basket";
-
-interface StoreContextValue {
-    basket: Basket | null;
-    setBasket: (basket: Basket) => void;
-    removeItem: (productId: number, quantity: number) => void;
-}
-
-export const StoreContext = createContext<StoreContextValue | undefined>(undefined);
-
-// eslint-disable-next-line react-refresh/only-export-components
-export function useStoreContext() {
-    const context = useContext(StoreContext);
-
-    if (context === undefined) {
-        throw Error("Not inside provider");
-    }
-
-    return context;
-}
 
 export function StoreProvider({ children }: PropsWithChildren<unknown>) {
     const [basket, setBasket] = useState<Basket | null>(null);
@@ -34,14 +16,16 @@ export function StoreProvider({ children }: PropsWithChildren<unknown>) {
 
             if (items[itemIndex].quantity === 0) items.splice(itemIndex, 1);
             setBasket(prevState => {
-                return { ...prevState!, items }
-            })
+                return { ...prevState!, items };
+            });
         }
     }
 
+    const value: StoreContextValue = { basket, setBasket, removeItem };
+
     return (
-        <StoreContext.Provider value={{ basket, setBasket, removeItem }}>
+        <StoreContext.Provider value={value}>
             {children}
         </StoreContext.Provider>
-    )
+    );
 }

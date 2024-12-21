@@ -6,7 +6,6 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
-import agent from '../../app/api/agent';
 import { FieldValues, useForm } from 'react-hook-form';
 import { LoadingButton } from '@mui/lab';
 import { useNavigate } from 'react-router-dom';
@@ -102,7 +101,6 @@ export default function Login() {
                     type="submit"
                     fullWidth
                     variant="contained"
-                // onClick={validateInputs}
                 >
                     Sign in
                 </LoadingButton>

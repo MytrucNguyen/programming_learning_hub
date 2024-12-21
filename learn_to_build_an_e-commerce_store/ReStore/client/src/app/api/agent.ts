@@ -2,6 +2,7 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import { toast } from "react-toastify";
 import { router } from "../router/Routes";
 import { PaginatedResponse } from "../models/pagination";
+import { LoginType, RegisterType } from "../models/user";
 
 const sleep = () => new Promise(resolve => setTimeout(resolve, 500));
 
@@ -77,8 +78,8 @@ const Basket = {
 }
 
 const Account = {
-    login: (values: any) => requests.post('account/login', values),
-    register: (values: any) => requests.post('account/register', values),
+    login: (values: LoginType) => requests.post('account/login', values),
+    register: (values: RegisterType) => requests.post('account/register', values),
     currentUser: () => requests.get('account/currentUser')
 }
 
