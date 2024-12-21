@@ -9,6 +9,9 @@ import { styled } from '@mui/material/styles';
 import agent from '../../app/api/agent';
 import { FieldValues, useForm } from 'react-hook-form';
 import { LoadingButton } from '@mui/lab';
+import { useNavigate } from 'react-router-dom';
+import { useAppDispatch } from '../../app/store/configureStore';
+import { signInUser } from './accountSlice';
 
 const Card = styled(MuiCard)(({ theme }) => ({
     display: 'flex',
@@ -30,17 +33,16 @@ const Card = styled(MuiCard)(({ theme }) => ({
 }));
 
 export default function Login() {
+    const navigate = useNavigate();
+    const dispatch = useAppDispatch();
+
     const { register, handleSubmit, formState: { isSubmitting, isValid, errors } } = useForm({
-        mode: 'onTouched',
+        mode: 'onSubmit',
     });
 
     async function submitForm(data: FieldValues) {
-        try {
-            await agent.Account.login(data);
-        }
-        catch (error) {
-            console.log(error)
-        }
+        await dispatch(signInUser(data));
+        navigate('/catalog');
     }
 
     return (
