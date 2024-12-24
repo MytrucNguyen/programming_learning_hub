@@ -4,6 +4,7 @@ import { FieldValues } from "react-hook-form";
 import agent from "../../app/api/agent";
 import { router } from "../../app/router/Routes";
 import { toast } from "react-toastify";
+import { getErrorMessage } from "../../utils/getErrorMessage";
 
 interface AccountState {
     user: User | null;
@@ -11,14 +12,6 @@ interface AccountState {
 
 const initialState: AccountState = {
     user: null
-}
-
-function getErrorMessage(error: unknown): string | null {
-    if (typeof error === 'object' && error !== null && 'data' in error) {
-        const errorData = (error as { data: { message?: string } }).data;
-        return errorData?.message || null;
-    }
-    return null;
 }
 
 export const signInUser = createAsyncThunk<User, FieldValues>(
@@ -30,7 +23,7 @@ export const signInUser = createAsyncThunk<User, FieldValues>(
             return user;
 
         } catch (error) {
-            const errorMessage = getErrorMessage(error) || "Failed to fetch products.";
+            const errorMessage = getErrorMessage(error) || "Failed to fetch account.";
             return thunkAPI.rejectWithValue(errorMessage);
         }
     }
@@ -47,7 +40,7 @@ export const getCurrentUser = createAsyncThunk<User>(
             return user;
 
         } catch (error) {
-            const errorMessage = getErrorMessage(error) || "Failed to fetch products.";
+            const errorMessage = getErrorMessage(error) || "Failed to fetch account.";
             return thunkAPI.rejectWithValue(errorMessage);
         }
     },

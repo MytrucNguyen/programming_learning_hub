@@ -1,6 +1,8 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, isAnyOf } from "@reduxjs/toolkit";
 import { Basket } from "../../app/models/basket";
 import agent from "../../app/api/agent";
+import { getErrorMessage } from "../../utils/getErrorMessage";
+import { getCookie } from "../../app/util/util";
 
 interface BasketState {
     basket: Basket | null;
@@ -14,6 +16,18 @@ const initialState: BasketState = {
     error: null,
 }
 
+export const getBasketAsync = createAsyncThunk<Basket>(
+    'basket/getBasketAsync',
+    async (_, thunkAPI) => {
+        try {
+            return await agent.Basket.get();
+        } catch (error) {
+            const errorMessage = getErrorMessage(error) || "Failed to fetch basket.";
+            return thunkAPI.rejectWithValue(errorMessage);
+        }
+    }
+)
+
 export const addBasketItemAsync = createAsyncThunk<Basket, { productId: number, quantity?: number }, { rejectValue: string }>(
     'basket/addBasketItemAsync',
     async ({ productId, quantity = 1 }, thunkAPI) => {
@@ -21,6 +35,11 @@ export const addBasketItemAsync = createAsyncThunk<Basket, { productId: number, 
             return await agent.Basket.addItem(productId, quantity);
         } catch {
             return thunkAPI.rejectWithValue("Failed to add item to basket.");
+        }
+    },
+    {
+        condition: () => {
+            if (!getCookie('buyerId')) return false;
         }
     }
 );
@@ -49,14 +68,6 @@ export const basketSlice = createSlice({
             state.status = `pendingAddItem${action.meta.arg.productId}`;
             state.error = null;
         });
-        builder.addCase(addBasketItemAsync.fulfilled, (state, action) => {
-            state.basket = action.payload;
-            state.status = 'idle';
-        });
-        builder.addCase(addBasketItemAsync.rejected, (state, action) => {
-            state.status = 'idle';
-            state.error = action.payload ?? "An error occurred while adding item.";
-        });
 
         builder.addCase(removeBasketItemAsync.pending, (state, action) => {
             const productName = action.meta.arg.name ?? "";
@@ -79,6 +90,15 @@ export const basketSlice = createSlice({
         builder.addCase(removeBasketItemAsync.rejected, (state, action) => {
             state.status = 'idle';
             state.error = action.payload ?? "An error occurred while removing item.";
+        });
+
+        builder.addMatcher(isAnyOf(addBasketItemAsync.fulfilled, getBasketAsync.fulfilled), (state, action) => {
+            state.basket = action.payload;
+            state.status = 'idle';
+        });
+        builder.addMatcher(isAnyOf(addBasketItemAsync.rejected, getBasketAsync.rejected), (state, action) => {
+            state.status = 'idle';
+            console.log(action.payload);
         });
     },
 });

@@ -3,6 +3,7 @@ import { Product, ProductParams } from "../../app/models/product";
 import agent from "../../app/api/agent";
 import { RootState } from "../../app/store/configureStore";
 import { MetaData } from "../../app/models/pagination";
+import { getErrorMessage } from "../../utils/getErrorMessage";
 
 interface FiltersPayload {
     brands: string[];
@@ -28,14 +29,6 @@ function initParams() {
         brands: [],
         types: [],
     }
-}
-
-function getErrorMessage(error: unknown): string | null {
-    if (typeof error === 'object' && error !== null && 'data' in error) {
-        const errorData = (error as { data: { message?: string } }).data;
-        return errorData?.message || null;
-    }
-    return null;
 }
 
 const productsAdapter = createEntityAdapter<Product>();
