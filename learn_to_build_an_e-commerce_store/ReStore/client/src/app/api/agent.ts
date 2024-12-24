@@ -2,7 +2,8 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import { toast } from "react-toastify";
 import { router } from "../router/Routes";
 import { PaginatedResponse } from "../models/pagination";
-import { LoginType, RegisterType } from "../models/user";
+import { RegisterType } from "../models/user";
+import { FieldValues } from "react-hook-form";
 
 const sleep = () => new Promise(resolve => setTimeout(resolve, 500));
 
@@ -36,13 +37,13 @@ axios.interceptors.response.use(async response => {
                 throw modelStateErrors.flat();
             }
 
-            toast.error(data.title)
+            toast.error(data.title);
             break;
         case 401:
-            toast.error(data.title)
+            toast.error(data.title || 'Unauthorized');
             break;
         case 500:
-            router.navigate('/server-error', { state: { error: data } })
+            router.navigate('/server-error', { state: { error: data } });
             break;
         default:
             break;
@@ -78,7 +79,7 @@ const Basket = {
 }
 
 const Account = {
-    login: (values: LoginType) => requests.post('account/login', values),
+    login: (values: FieldValues) => requests.post('account/login', values),
     register: (values: RegisterType) => requests.post('account/register', values),
     currentUser: () => requests.get('account/currentUser')
 }
