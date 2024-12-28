@@ -7,10 +7,11 @@ import Typography from '@mui/material/Typography';
 import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
 import { useForm } from 'react-hook-form';
-import { Alert, AlertTitle, LoadingButton } from '@mui/lab';
+import { LoadingButton } from '@mui/lab';
 import agent from '../../app/api/agent';
-import { useState } from 'react';
-import { List, ListItem, ListItemText } from '@mui/material';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
+import { RegisterType } from '../../app/models/user';
 
 const Card = styled(MuiCard)(({ theme }) => ({
     display: 'flex',
@@ -32,10 +33,24 @@ const Card = styled(MuiCard)(({ theme }) => ({
 }));
 
 export default function Register() {
-    const [validationErrors, setValidationErrors] = useState([]);
-    const { register, handleSubmit, formState: { isSubmitting, isValid, errors } } = useForm({
-        mode: 'onSubmit',
+    const navigate = useNavigate();
+    const { register, handleSubmit, setError, formState: { isSubmitting, isValid, errors } } = useForm({
+        mode: 'onChange',
     });
+
+    function handleApiErrors(errors: string[]) {
+        if (errors) {
+            errors.forEach((error: string) => {
+                if (error.includes('Password')) {
+                    setError('password', { message: error })
+                } else if (error.includes('Email')) {
+                    setError('email', { message: error })
+                } else if (error.includes('Username')) {
+                    setError('username', { message: error })
+                }
+            });
+        }
+    }
 
     return (
         <Card variant="outlined">
@@ -48,7 +63,20 @@ export default function Register() {
             </Typography>
             <Box
                 component="form"
-                onSubmit={handleSubmit(data => agent.Account.register(data).catch(error => setValidationErrors(error)))}
+                onSubmit={handleSubmit(data => {
+                    const registerData: RegisterType = {
+                        username: data.username,
+                        email: data.email,
+                        password: data.password,
+                    };
+
+                    agent.Account.register(registerData)
+                        .then(() => {
+                            toast.success("Registration successful - you can now login");
+                            navigate('/login');
+                        })
+                        .catch(error => handleApiErrors(error));
+                })}
                 noValidate
                 sx={{
                     display: 'flex',
@@ -83,7 +111,13 @@ export default function Register() {
                         required
                         fullWidth
                         variant="outlined"
-                        {...register('email', { required: 'Email is required' })}
+                        {...register('email', {
+                            required: 'Email is required',
+                            pattern: {
+                                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                                message: 'Not a valid email address'
+                            }
+                        })}
                     />
                 </FormControl>
                 <FormControl>
@@ -98,22 +132,16 @@ export default function Register() {
                         required
                         fullWidth
                         variant="outlined"
-                        {...register('password', { required: "Password is required" })}
+                        {...register('password', {
+                            required: "Password is required",
+                            pattern: {
+                                value: /^(?=.*[0-9])(?=.*[a-zA-Z]).{6,}$/,
+                                message: 'Password must contain at least one number and one letter, and be at least 6 characters long'
+                            }
+                        })}
                     />
                 </FormControl>
 
-                {validationErrors.length > 0 &&
-                    <Alert severity="error">
-                        <AlertTitle>Validation Errors</AlertTitle>
-                        <List>
-                            {validationErrors.map(error => (
-                                <ListItem key={error}>
-                                    <ListItemText>{error}</ListItemText>
-                                </ListItem>
-                            ))}
-                        </List>
-                    </Alert>
-                }
                 <LoadingButton
                     loading={isSubmitting}
                     disabled={!isValid}
@@ -134,6 +162,6 @@ export default function Register() {
                     Login
                 </Link>
             </Typography>
-        </Card>
+        </Card >
     );
 }
