@@ -82,7 +82,7 @@ export default function ProductDetails() {
                         </TableBody>
                     </Table>
                 </TableContainer>
-                <Grid2 container spacing={2}>
+                <Grid2 container spacing={2} sx={{ mt: 2 }}>
                     <Grid2 size={6}>
                         <TextField
                             onChange={handleInputChange}
@@ -109,6 +109,6 @@ export default function ProductDetails() {
                     </Grid2>
                 </Grid2>
             </Grid2>
-        </Grid2>
+        </Grid2 >
     )
 }
