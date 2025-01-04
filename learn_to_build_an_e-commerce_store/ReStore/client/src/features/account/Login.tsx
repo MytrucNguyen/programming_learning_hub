@@ -8,7 +8,7 @@ import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
 import { FieldValues, useForm } from 'react-hook-form';
 import { LoadingButton } from '@mui/lab';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../../app/store/configureStore';
 import { signInUser } from './accountSlice';
 
@@ -34,6 +34,7 @@ const Card = styled(MuiCard)(({ theme }) => ({
 export default function Login() {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
+    const location = useLocation();
 
     const { register, handleSubmit, formState: { isSubmitting, isValid, errors } } = useForm({
         mode: 'onSubmit',
@@ -42,7 +43,7 @@ export default function Login() {
     async function submitForm(data: FieldValues) {
         try {
             await dispatch(signInUser(data));
-            navigate('/catalog');
+            navigate(location.state?.from || '/catalog');
         } catch (error) {
             console.log(error);
         }
