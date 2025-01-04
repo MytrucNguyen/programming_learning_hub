@@ -5,7 +5,7 @@ import { ShoppingCart } from "@mui/icons-material";
 import { useAppSelector } from "../store/configureStore";
 import SignedInMenu from "./SignedInMenu";
 
-interface HeaderProps {
+interface NavBarProps {
     darkMode: boolean;
     handleThemeChange: () => void;
 }
@@ -33,14 +33,14 @@ const navStyle = {
     }
 }
 
-export default function Header({ darkMode, handleThemeChange }: HeaderProps) {
+export default function NavBar({ darkMode, handleThemeChange }: NavBarProps) {
     const { basket } = useAppSelector(state => state.basket);
     const { user } = useAppSelector(state => state.account);
 
     const itemCount = basket?.items.reduce((sum, item) => sum + item.quantity, 0);
 
     return (
-        <AppBar position="static" sx={{ mb: 4 }}>
+        <AppBar position="static">
             <Toolbar sx={{
                 display: 'flex',
                 justifyContent:

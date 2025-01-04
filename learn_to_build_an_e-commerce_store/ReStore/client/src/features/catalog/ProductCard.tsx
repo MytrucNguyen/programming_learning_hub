@@ -1,4 +1,4 @@
-import { Avatar, Button, Card, CardActions, CardContent, CardHeader, CardMedia, Typography } from "@mui/material";
+import { Button, Card, CardActions, CardContent, CardMedia, Typography } from "@mui/material";
 import { Product } from "../../app/models/product";
 import { Link } from "react-router-dom";
 import { LoadingButton } from "@mui/lab";
@@ -15,37 +15,38 @@ export default function ProductCard({ product }: ProductCardProps) {
     const dispatch = useAppDispatch();
 
     return (
-        <Card>
-            <CardHeader
-                avatar={
-                    <Avatar sx={{ bgcolor: 'secondary.main' }}>
-                        {product.name.charAt(0).toUpperCase()}
-                    </Avatar>
-                }
-                title={product.name}
-                titleTypographyProps={{
-                    sx: {
-                        fontWeight: 'bold',
-                        color: 'primary.main'
-                    }
-                }}
-            />
+        <Card
+            elevation={3}
+            sx={{ width: 280, borderRadius: 2, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
+        >
             <CardMedia
-                sx={{ height: 140, backgroundSize: 'contain', bgcolor: 'primary.light' }}
+                sx={{ height: 240, backgroundSize: 'cover', bgcolor: 'primary.light' }}
                 image={product.pictureUrl}
                 title={product.name}
             />
             <CardContent>
-                <Typography gutterBottom color='secondary' variant="h5">
+                <Typography gutterBottom sx={{ textTransform: 'uppercase' }} variant="subtitle2">
+                    {product.name}
+                </Typography>
+                <Typography gutterBottom variant="h6" sx={{ color: 'secondary.main' }}>
                     {currentFormat(product.price)}
                 </Typography>
-                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                    {product.brand} / {product.type}
-                </Typography>
             </CardContent>
-            <CardActions>
-                <LoadingButton loading={status === ('pendingAddItem' + product.id)} onClick={() => dispatch(addBasketItemAsync({ productId: product.id }))} size="small" >Add to cart</LoadingButton>
-                <Button size="small" component={Link} to={`/catalog/${product.id}`}>View</Button>
+            <CardActions
+                sx={{ justifyContent: 'space-between' }}
+            >
+                <LoadingButton
+                    loading={status === ('pendingAddItem' + product.id)}
+                    onClick={() => dispatch(addBasketItemAsync({ productId: product.id }))}
+                    size="small">
+                    Add to cart
+                </LoadingButton>
+                <Button
+                    size="small"
+                    component={Link}
+                    to={`/catalog/${product.id}`}>
+                    View
+                </Button>
             </CardActions>
         </Card>
     )

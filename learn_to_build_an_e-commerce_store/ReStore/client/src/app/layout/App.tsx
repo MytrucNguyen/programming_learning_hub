@@ -1,5 +1,4 @@
-import { Container, createTheme, CssBaseline, ThemeProvider } from "@mui/material";
-import Header from "./Header";
+import { Box, Container, createTheme, CssBaseline, ThemeProvider } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
@@ -8,6 +7,7 @@ import LoadingComponent from "./LoadingComponent";
 import { useAppDispatch } from "../store/configureStore";
 import { getBasketAsync } from "../../features/basket/basketSlice";
 import { getCurrentUser } from "../../features/account/accountSlice";
+import NavBar from "./NavBar";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -50,11 +50,20 @@ function App() {
     <ThemeProvider theme={theme}>
       <ToastContainer position="bottom-right" hideProgressBar theme="colored" />
       <CssBaseline />
-      <Header darkMode={darkMode} handleThemeChange={handleThemeChange} />
-      <Container>
-        <Outlet />
-      </Container>
-    </ThemeProvider>
+      <NavBar darkMode={darkMode} handleThemeChange={handleThemeChange} />
+      <Box sx={{
+        minHeight: '100vh',
+        background: darkMode ?
+          'radial-gradient(circle, #1e3aba, #111b27)'
+          : 'radial-gradient(circle, #baecf9, #f0f9ff)',
+        py: 6
+      }}
+      >
+        <Container maxWidth='xl'>
+          <Outlet />
+        </Container>
+      </Box>
+    </ThemeProvider >
   )
 }
 
